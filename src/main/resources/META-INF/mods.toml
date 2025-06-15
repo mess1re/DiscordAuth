@@ -7,7 +7,7 @@ modId="discordauth"
 version="1.0.0"
 displayName="Discord Auth"
 authors="messire"
-description='''Авторизация игроков через Discord роль "игрок" на вашем сервере.'''
+description='''Авторизация игроков через Discord.'''
 
 [[dependencies.discordauth]]
 modId="forge"
