@@ -74,7 +74,7 @@ public class DiscordAuth {
             if (event.phase == TickEvent.Phase.END && player.level().getGameTime() % 20 == 0) {
                 long ms = LimboManager.timeLeft(player.getUUID());
                 long seconds = ms / 1000;
-                player.displayClientMessage(LocalizationManager.getTranslation("discordauth.message.time_left", player.getLanguage(), seconds), true);
+                player.displayClientMessage(LocalizationManager.getTranslation("discordauth.message.time_left", player.getLanguage(), seconds), true); // true - action bar
             }
             int limboY = Math.min(300, player.serverLevel().getMaxBuildHeight() - 10);
             if (player.getY() < limboY) {

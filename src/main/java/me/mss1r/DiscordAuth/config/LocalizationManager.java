@@ -58,6 +58,8 @@ public class LocalizationManager {
         ruLang.put("discordauth.message.time_left", "§eОсталось §b%s §eсекунд для авторизации.");
         ruLang.put("discordauth.message.timeout", "§cВремя на ввод кода истекло! Зайдите снова и попробуйте ещё раз.");
         ruLang.put("discordauth.message.discord_already_linked", "§cЭтот Discord-аккаунт уже привязан к другому игроку!");
+        ruLang.put("discordauth.message.unlink_success", "§aВаша привязка к Discord удалена!");
+        ruLang.put("discordauth.message.not_linked", "§cВаш аккаунт не был привязан к Discord.");
         LOCALIZATIONS.put(DEFAULT_LANG, ruLang);
         saveLocalization(DEFAULT_LANG, ruLang);
     }

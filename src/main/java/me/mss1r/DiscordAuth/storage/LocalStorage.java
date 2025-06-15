@@ -61,6 +61,11 @@ public class LocalStorage {
         sessions.remove(uuid);
         saveToFile();
     }
+    public static void cleanExpiredSessions() {
+        sessions.entrySet().removeIf(e -> e.getValue().isExpired());
+        saveToFile();
+        DiscordAuth.LOGGER.info("Expired sessions cleaned.");
+    }
 
     // Сохраняем все сессии в файл (атомарно)
     private static synchronized void saveToFile() {

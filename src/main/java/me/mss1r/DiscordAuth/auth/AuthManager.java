@@ -16,6 +16,7 @@ public class AuthManager {
     // Загрузка Дискорд сессий
     public static void init() {
         LocalStorage.loadAll();
+        LocalStorage.cleanExpiredSessions();
     }
 
     // Без авторизации на небеса
