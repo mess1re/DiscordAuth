@@ -6,6 +6,8 @@ import me.mss1r.DiscordAuth.auth.LimboManager;
 import me.mss1r.DiscordAuth.command.DiscordLinkCommand;
 import me.mss1r.DiscordAuth.config.Config;
 import me.mss1r.DiscordAuth.config.LocalizationManager;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
@@ -14,12 +16,12 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.Mod;
+
 import org.slf4j.Logger;
 
 import java.util.UUID;
 
-@Mod("discordauth")
+@net.minecraftforge.fml.common.Mod("discordauth")
 public class DiscordAuth {
     public static final String MODID = "discordauth";
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -28,6 +30,8 @@ public class DiscordAuth {
         Config.register();
         LocalizationManager.loadLocalizations();
         AuthManager.init();
+
+        // Слушатели Forge-событий
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerCommand);
@@ -67,6 +71,7 @@ public class DiscordAuth {
         }
     }
 
+
     // Таймер и фиксация позиции
     private void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (!(event.player instanceof ServerPlayer player)) return;
@@ -74,14 +79,21 @@ public class DiscordAuth {
             if (event.phase == TickEvent.Phase.END && player.level().getGameTime() % 20 == 0) {
                 long ms = LimboManager.timeLeft(player.getUUID());
                 long seconds = ms / 1000;
-                player.displayClientMessage(LocalizationManager.getTranslation("discordauth.message.time_left", player.getLanguage(), seconds), true); // true - action bar
+                player.displayClientMessage(LocalizationManager.getTranslation("discordauth.message.time_left", player.getLanguage(), seconds), true);
+                // Обновляем эффекты
+                AuthManager.giveLimboEffects(player);
             }
             int limboY = Math.min(300, player.serverLevel().getMaxBuildHeight() - 10);
             if (player.getY() < limboY) {
-                player.teleportTo(player.serverLevel(), player.getX(), limboY, player.getZ(), player.getYRot(), player.getXRot());
+                player.teleportTo(player.serverLevel(), player.getX(), limboY, player.getZ(), 0, 0); // yaw = 0, pitch = 0
             }
             player.setDeltaMovement(0, 0, 0);
             player.resetFallDistance();
+            // Фиксируем направление взгляда
+            player.setYRot(0); // yaw
+            player.setXRot(0); // pitch
+            // Синхронизируем с клиентом
+            player.connection.send(new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.EYES, player.getX(), player.getY() + player.getEyeHeight(), player.getZ()));
         }
     }
 

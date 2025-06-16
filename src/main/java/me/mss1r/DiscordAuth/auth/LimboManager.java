@@ -22,13 +22,15 @@ public class LimboManager {
         limboPlayers.put(uuid, System.currentTimeMillis());
         savedPositions.put(uuid, player.blockPosition());
         teleportToLimbo(player);
-        // Анти-урон, фулл хп/голод
         player.setHealth(player.getMaxHealth());
         player.getFoodData().setFoodLevel(20);
         player.getFoodData().setSaturation(20.0F);
+
+        // Тут!
+        player.setInvisible(true);
+        player.setInvulnerable(true);
     }
 
-    // Возвращаем с небес на землю
     public static void remove(ServerPlayer player) {
         UUID uuid = player.getUUID();
         limboPlayers.remove(uuid);
@@ -37,6 +39,9 @@ public class LimboManager {
             player.teleportTo(player.serverLevel(), oldPos.getX() + 0.5, oldPos.getY(), oldPos.getZ() + 0.5, player.getYRot(), player.getXRot());
         }
         player.removeAllEffects();
+        // И тут!
+        player.setInvisible(false);
+        player.setInvulnerable(false);
     }
 
     // Проверяем, находится ли игрок в limbo

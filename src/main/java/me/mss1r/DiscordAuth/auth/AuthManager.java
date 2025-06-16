@@ -71,16 +71,14 @@ public class AuthManager {
     }
 
     // Мона эффекты добавить
-    private static void giveLimboEffects(ServerPlayer player) {
-        if (!player.hasEffect(MobEffects.INVISIBILITY)) {
-            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 600, 0, false, false, false));
-        }
+    public static void giveLimboEffects(ServerPlayer player) {
+        // Применяем невидимость и слепоту без иконок в инвентаре
+        player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, -1, 0, false, false, false)); // showIcon = false
     }
 
     // Удалить эффекты limbo
     private static void removeLimboEffects(ServerPlayer player) {
         player.removeEffect(MobEffects.INVISIBILITY);
-        player.removeEffect(MobEffects.BLINDNESS);
     }
 
     // Показать титлы limbo при входе
